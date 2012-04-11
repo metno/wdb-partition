@@ -8,7 +8,7 @@ BEGIN;
 --table
 CREATE TABLE wdb_int.floatvalue_TABLE_EXTENSION (CHECK (validtimefrom >= 'TIME_FROM' AND validtimefrom < 'TIME_TO')) INHERITS (wdb_int.floatvalue);
 
-INSERT INTO floatvalue_partitions VALUES (
+INSERT INTO wdb_int.floatvalue_partitions VALUES (
        'wdb_int.floatvalue_TABLE_EXTENSION', 'TIME_FROM', 'TIME_TO');
 
 -- indices
@@ -57,4 +57,4 @@ CREATE INDEX XIE4Wdb_FloatValue_TABLE_EXTENSION ON wdb_int.FloatValue_TABLE_EXTE
        ValueParameterId
 );
 
-ROLLBACK;
+COMMIT;
