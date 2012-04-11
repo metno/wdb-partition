@@ -1,12 +1,10 @@
 BEGIN;
 
---CREATE TABLE wdb_int.floatvalue_partitions (
---       partition_name text NOT NULL PRIMARY KEY,
---       fromtime timestamp with time zone NOT NULL,
---       totime timestamp with time zone NOT NULL
---);
-
-DROP TRIGGER floatvalue_partition_allocate_trigger ON wdb_int.floatvalue;
+CREATE TABLE wdb_int.floatvalue_partitions (
+       partition_name text NOT NULL PRIMARY KEY,
+       fromtime timestamp with time zone NOT NULL,
+       totime timestamp with time zone NOT NULL
+);
 
 CREATE OR REPLACE FUNCTION floatvalue_partition_allocate()
 RETURNS trigger AS
@@ -49,9 +47,6 @@ BEGIN
 			 NEW.value || ', ' ||
 			 quote_literal(NEW.valuestoretime) || ')'
 	;
-
-	RAISE INFO '%', insert_statement;
-
 	EXECUTE insert_statement;
 
 	RETURN NULL;

@@ -13,7 +13,7 @@ INSERT INTO wdb_int.floatvalue_partitions VALUES (
 
 -- indices
 ALTER TABLE ONLY wdb_int.floatvalue_TABLE_EXTENSION ADD CONSTRAINT floatvalue_TABLE_EXTENSION_pkey PRIMARY KEY (valueid, valuetype);
-CREATE UNIQUE INDEX XAK1Wdb_FloatValue_2012_01 ON wdb_int.FloatValue_TABLE_EXTENSION
+CREATE UNIQUE INDEX XAK1Wdb_FloatValue_TABLE_EXTENSION ON wdb_int.FloatValue_TABLE_EXTENSION
 (
        DataProviderId,
        ReferenceTime,
