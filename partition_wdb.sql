@@ -1,8 +1,8 @@
 BEGIN;
 
 -- Replace all instances of TABLE_EXTENSION a proper name extenstion
---                          'TIME_FROM' with correct from time
---                          'TIME_TO' with correct to time
+--                          TIME_FROM with correct from time
+--                          TIME_TO with correct to time
 
 
 --table
