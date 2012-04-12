@@ -15,6 +15,8 @@ USERNAME=
 HOSTNAME=
 PORT=
 
+PARTITION_SIZE_IN_MONTHS=1
+
 version()
 {
 	echo $PROGRAM $VERSION
@@ -28,12 +30,19 @@ More description
 
 Options:
 
-  -f [ --from ] arg            Earliest time the new partition should be 
-                               valid for. 
-  -t [ --to ]                  First point in time the new partition should be
-                               valid for. If not given, the new partition will
-                               be valid for exactly one month.
+  -f [ --from ] arg            Earliest time the new partition should
+                               be valid for.
+  -t [ --to ]                  First point in time the new partition
+                               should be valid for. If not given, the
+                               new partition will be valid for exactly
+                               one month.
+
   --table-extension            Override generated table name extension
+
+  --next-month                 This is an alternative to the above
+                               options. Create a new partition, valid
+                               for one month, starting at the first
+                               day of the upcoming month
 
   -d [ --database ] arg (=wdb) Database name (ex. wdb)
   -h [ --host ] arg            Database host (ex. somehost.met.no)
@@ -50,7 +59,25 @@ wdb_arguments()
 	[ -z $PORT ] || echo -n "-p$PORT "
 }
 
-TEMP=`getopt -o d:h:u:U:p:f:t: --long version,help,database:,host:,username:,port:from:,to:,table-extension: -n $1 -- "$@"`
+# increment number of months for date $1 by $2
+increment_month()
+{
+    YEAR=`date -d$1 +%Y`
+    START_MONTH=`date -d$1 +%m`
+    END_MONTH=`expr $START_MONTH + $2`
+    if [ $END_MONTH = 13 ]; then
+	YEAR=`expr $YEAR + 1`
+	END_MONTH=01
+    fi
+    if [ `expr length $END_MONTH` = 1 ]; then
+	END_MONTH=0$END_MONTH
+    fi
+
+    echo $YEAR-$END_MONTH-01
+}
+
+
+TEMP=`getopt -o d:h:u:U:p:f:t: --long version,help,database:,host:,username:,port:from:,to:,table-extension:,next-month -n $1 -- "$@"`
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 eval set -- "$TEMP"
 
@@ -93,6 +120,11 @@ while true; do
 	    TABLE_EXTENSION=$2
 	    shift 2
 	    ;;
+	--next-month)
+	    TODAY=`date +%Y-%m-01`
+	    TIME_FROM=`increment_month $TODAY $PARTITION_SIZE_IN_MONTHS`
+	    shift
+	    ;;
 	--)
 	    shift
 	    break
@@ -104,29 +136,22 @@ while true; do
     esac
 done
 
-# increment number of months for date $1 by $2
-increment_month()
-{
-    YEAR=`date -d$1 +%Y`
-    START_MONTH=`date -d$1 +%m`
-    END_MONTH=`expr $START_MONTH + $2`
-    if [ $END_MONTH = 13 ]; then
-	YEAR=`expr $YEAR + 1`
-	END_MONTH=01
-    fi
-    if [ `expr length $END_MONTH` = 1 ]; then
-	END_MONTH=0$END_MONTH
-    fi
 
-    echo $YEAR-$END_MONTH-01
-}
-
+if [ -z $TIME_FROM ]; then
+    echo Fromtime must be specified
+    exit 1
+fi
 if [ -z $TIME_TO ]; then
-    TIME_TO=`increment_month $TIME_FROM 1`
+    TIME_TO=`increment_month $TIME_FROM $PARTITION_SIZE_IN_MONTHS`
 fi
 if [ -z $TABLE_EXTENSION ]; then
     TABLE_EXTENSION=`date -d$TIME_FROM +%Y%m`
 fi
+
+#echo $TABLE_EXTENSION
+#echo $TIME_FROM
+#echo $TIME_TO
+
 
 cat $SHAREDIR/partition_wdb.sql | \
 sed s/TABLE_EXTENSION/$TABLE_EXTENSION/g | \
