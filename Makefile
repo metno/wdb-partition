@@ -1,7 +1,7 @@
 PACKAGE_NAME = wdb-partition
 VERSION = 0.1.0
 
-PREFIX = /home/vegardb/tmp
+PREFIX = /usr
 SQLDIR = $(PREFIX)/share/$(PACKAGE_NAME)
 BINDIR = $(PREFIX)/bin
 
