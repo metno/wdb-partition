@@ -15,7 +15,7 @@ USERNAME=
 HOSTNAME=
 PORT=
 
-PARTITION_SIZE_IN_MONTHS=1
+PARTITION_SIZE_IN_MONTHS=3
 
 version()
 {
@@ -39,7 +39,7 @@ Options:
 
   --table-extension            Override generated table name extension
 
-  --next-month                 This is an alternative to the above
+  --next-period                 This is an alternative to the above
                                options. Create a new partition, valid
                                for one month, starting at the first
                                day of the upcoming month
@@ -65,9 +65,9 @@ increment_month()
     YEAR=`date -d$1 +%Y`
     START_MONTH=`date -d$1 +%m`
     END_MONTH=`expr $START_MONTH + $2`
-    if [ $END_MONTH = 13 ]; then
-	YEAR=`expr $YEAR + 1`
-	END_MONTH=01
+    if [ $END_MONTH -gt 12 ]; then
+		YEAR=`expr $YEAR + 1`
+		END_MONTH=`expr $END_MONTH - 12`
     fi
     if [ `expr length $END_MONTH` = 1 ]; then
 	END_MONTH=0$END_MONTH
@@ -76,8 +76,25 @@ increment_month()
     echo $YEAR-$END_MONTH-01
 }
 
+next_period_start()
+{
+    YEAR=`date -d$1 +%Y`
+    START_MONTH=`date -d$1 +%m`
+    
+    END_MONTH=`expr $START_MONTH + $PARTITION_SIZE_IN_MONTHS - $START_MONTH % $PARTITION_SIZE_IN_MONTHS`
+    if [ $END_MONTH -gt 12 ]; then
+		YEAR=`expr $YEAR + 1`
+		END_MONTH=`expr $END_MONTH - 12`  
+    fi
+    if [ `expr length $END_MONTH` = 1 ]; then
+		END_MONTH=0$END_MONTH
+    fi
 
-TEMP=`getopt -o d:h:u:U:p:f:t: --long version,help,database:,host:,username:,port:from:,to:,table-extension:,next-month -n $1 -- "$@"`
+    echo $YEAR-$END_MONTH-01
+}
+
+
+TEMP=`getopt -o d:h:u:U:p:f:t: --long version,help,database:,host:,username:,port:from:,to:,table-extension:,next-period -n $1 -- "$@"`
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 eval set -- "$TEMP"
 
@@ -120,10 +137,11 @@ while true; do
 	    TABLE_EXTENSION=$2
 	    shift 2
 	    ;;
-	--next-month)
+	--next-period)
 	    TODAY=`date +%Y-%m-01`
-	    TIME_FROM=`increment_month $TODAY $PARTITION_SIZE_IN_MONTHS`
-	    shift
+	    TIME_FROM=`next_period_start $TODAY`
+    	TIME_TO=`next_period_start $TIME_FROM`
+        shift
 	    ;;
 	--)
 	    shift
@@ -149,8 +167,8 @@ if [ -z $TABLE_EXTENSION ]; then
 fi
 
 #echo $TABLE_EXTENSION
-#echo $TIME_FROM
-#echo $TIME_TO
+echo "From: $TIME_FROM"
+echo "To:   $TIME_TO"
 
 
 cat $SHAREDIR/partition_wdb.sql | \
@@ -158,5 +176,4 @@ sed s/TABLE_EXTENSION/$TABLE_EXTENSION/g | \
 sed s/TIME_FROM/$TIME_FROM/g  | \
 sed s/TIME_TO/$TIME_TO/g | \
 psql wdb
-
 

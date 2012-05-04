@@ -18,7 +18,7 @@ INSERT INTO wdb_partition.floatvalue_partitions VALUES (
 
 --table
 
-CREATE TABLE wdb_partition.floatvalue_TABLE_EXTENSION (CHECK (validtimefrom >= 'TIME_FROM' AND validtimefrom < 'TIME_TO')) INHERITS (wdb_int.floatvalue);
+CREATE TABLE wdb_partition.floatvalue_TABLE_EXTENSION (CHECK (referencetime >= 'TIME_FROM' AND referencetime < 'TIME_TO')) INHERITS (wdb_int.floatvalue);
 
 
 
@@ -49,32 +49,12 @@ CREATE UNIQUE INDEX XAK1Wdb_FloatValue_TABLE_EXTENSION ON wdb_partition.FloatVal
        ValidTimeIndeterminateCode
 );
 
-CREATE INDEX XIE1Wdb_FloatValue_TABLE_EXTENSION ON wdb_partition.FloatValue_TABLE_EXTENSION
+CREATE INDEX i_FloatValue_TABLE_EXTENSION ON wdb_partition.FloatValue_TABLE_EXTENSION
 (
-       DataProviderId,
-       ValidTimeFrom,
-       ValueParameterId
-);
-
-CREATE INDEX XIE2Wdb_FloatValue_TABLE_EXTENSION ON wdb_partition.FloatValue_TABLE_EXTENSION
-(
-       PlaceId,
-       ValidTimeFrom,
-       ValueParameterId
-);
-
-CREATE INDEX XIE3Wdb_FloatValue_TABLE_EXTENSION ON wdb_partition.FloatValue_TABLE_EXTENSION
-(
-       ValidTimeFrom,
-       PlaceId,
-       Valueparameterid
-);
-
-CREATE INDEX XIE4Wdb_FloatValue_TABLE_EXTENSION ON wdb_partition.FloatValue_TABLE_EXTENSION
-(
-       ValidTimeFrom,
-       DataProviderId,
-       ValueParameterId
+       	dataproviderid, 
+       	referencetime, 
+       	placeid, 
+       	valueparameterid
 );
 
 

@@ -27,11 +27,11 @@ BEGIN
 	FROM 
 	      wdb_partition.floatvalue_partitions
 	WHERE 
-	      fromtime <= NEW.validtimefrom AND
-	      totime > NEW.validtimefrom;
+	      fromtime <= NEW.referencetime AND
+	      totime > NEW.referencetime;
 
 	IF NOT FOUND THEN
-	   RAISE EXCEPTION 'A partition is not yet created for time %', NEW.validtimefrom;
+	   RAISE EXCEPTION 'A partition is not yet created for time %', NEW.referencetime;
 	END IF;
 
 	-- Feil her
