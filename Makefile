@@ -34,8 +34,17 @@ uninstall:
 	cd $(BINDIR) && rm -f $(BUILT_FILES)
 	cd $(SQLDIR) && rm -f $(SQL_SOURCES)
 
+DISTFILE = wdb-partition-$(VERSION).tar.gz
+
 dist:	
 	mkdir -p wdb-partition-$(VERSION)
 	cp $(ALL_DIST_FILES) wdb-partition-$(VERSION)
-	tar cvzf wdb-partition-$(VERSION).tar.gz wdb-partition-$(VERSION)
+	tar cvzf $(DISTFILE) wdb-partition-$(VERSION)
 	rm -r wdb-partition-$(VERSION)
+
+debian: dist
+	mv $(DISTFILE) ..
+	dpkg-buildpackage
+	rm debian/wdb-partition
+
+.PHONY: all clean install uninstall dist debian
