@@ -4,21 +4,26 @@ VERSION = 0.1.0
 PREFIX = $(DESTDIR)/usr
 SQLDIR = $(PREFIX)/share/$(PACKAGE_NAME)
 BINDIR = $(PREFIX)/bin
+MANDIR = $(PREFIX)/share/man/man1/
 
 BIN_SOURCES = wdb-create-partition.sh wdb-setup-partition.sh
 SQL_SOURCES = setup_partitioning.sql partition_wdb.sql
 ALL_DIST_FILES = $(BIN_SOURCES) $(SQL_SOURCES) Makefile
 
-BUILT_FILES = $(BIN_SOURCES:.sh=)
+EXECUTABLES = $(BIN_SOURCES:.sh=)
+MANPAGES = $(BIN_SOURCES:.sh=.1)
+
+BUILT_FILES = $(EXECUTABLES) $(MANPAGES)
 
 all:	$(BUILT_FILES)
 
 
-wdb-create-partition:	wdb-create-partition.sh
+%: %.sh
 	sed s_SHAREDIR\=\._SHAREDIR=$(SQLDIR)_g $< > $@
-	
-wdb-setup-partition: wdb-setup-partition.sh
-	sed s_SHAREDIR\=\._SHAREDIR=$(SQLDIR)_g $< > $@
+	chmod 775 $@
+
+%.1: %
+	help2man -Nn"`./$< --help | head -n1`" ./$< > $@
 
 clean:
 	rm -f $(BUILT_FILES)
@@ -28,11 +33,14 @@ install:	all
 	mkdir -p $(SQLDIR)
 	install -m444 -t $(SQLDIR) $(SQL_SOURCES)
 	mkdir -p $(BINDIR)
-	install -t $(BINDIR) $(BUILT_FILES)
+	install -t $(BINDIR) $(EXECUTABLES)
+	mkdir -p $(MANDIR)
+	install -t $(MANDIR) $(MANPAGES)
 
 uninstall:
-	cd $(BINDIR) && rm -f $(BUILT_FILES)
+	cd $(BINDIR) && rm -f $(EXECUTABLES)
 	cd $(SQLDIR) && rm -f $(SQL_SOURCES)
+	cd $(MANDIR) && rm -f $(MANPAGES)
 
 DISTFILE = wdb-partition-$(VERSION).tar.gz
 ARCHITECTURE = `dpkg-architecture -qDEB_BUILD_ARCH`

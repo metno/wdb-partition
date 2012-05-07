@@ -6,3 +6,5 @@ debian/wdb-partition.substvars
 wdb-create-partition
 wdb-setup-partition
 debian/wdb-partition/
+wdb-create-partition.1
+wdb-setup-partition.1
