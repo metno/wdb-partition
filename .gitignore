@@ -1,0 +1,5 @@
+.project
+debian/files
+debian/wdb-partition.debhelper.log
+debian/wdb-partition.substvars
+
