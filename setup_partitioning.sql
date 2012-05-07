@@ -1,5 +1,7 @@
 BEGIN;
 
+\set ON_ERROR_STOP
+
 CREATE SCHEMA wdb_partition;
 REVOKE ALL ON SCHEMA wdb_partition FROM PUBLIC;
 GRANT ALL ON SCHEMA wdb_partition TO wdb_admin;

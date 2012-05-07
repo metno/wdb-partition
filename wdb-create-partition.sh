@@ -24,9 +24,11 @@ version()
 
 help()
 {
-echo "Description
+echo "Add a new floatvalue partition to wdb.
 
-More description
+If you have installed wdb-partition into your wdb database, you must also run 
+this program to create each partition. It is only possible to load data for 
+which you have a partition.
 
 Options:
 
@@ -76,6 +78,7 @@ increment_month()
     echo $YEAR-$END_MONTH-01
 }
 
+# Get start of next partition period, after today
 next_period_start()
 {
     YEAR=`date -d$1 +%Y`
@@ -94,7 +97,7 @@ next_period_start()
 }
 
 
-TEMP=`getopt -o d:h:u:U:p:f:t: --long version,help,database:,host:,username:,port:from:,to:,table-extension:,next-period -n $1 -- "$@"`
+TEMP=`getopt -o d:h:u:U:p:f:t: --long version,help,database:,host:,username:,port:,from:,to:,table-extension:,next-period -n $1 -- "$@"`
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 eval set -- "$TEMP"
 
@@ -143,6 +146,12 @@ while true; do
     	TIME_TO=`next_period_start $TIME_FROM`
         shift
 	    ;;
+	--this-period)
+	    TODAY=`date +%Y-%m-01`
+	    TIME_FROM=`next_period_start $TODAY`
+    	TIME_TO=`next_period_start $TIME_FROM`
+        shift
+	    ;;
 	--)
 	    shift
 	    break
@@ -175,5 +184,5 @@ cat $SHAREDIR/partition_wdb.sql | \
 sed s/TABLE_EXTENSION/$TABLE_EXTENSION/g | \
 sed s/TIME_FROM/$TIME_FROM/g  | \
 sed s/TIME_TO/$TIME_TO/g | \
-psql wdb
+psql `wdb_arguments`
 

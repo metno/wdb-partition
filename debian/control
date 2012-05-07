@@ -9,5 +9,7 @@ Homepage: <insert the upstream URL, if relevant>
 Package: wdb-partition
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Modify a wdb database's floatvalue table to be partitioned
+ Partitioning is useful for speeding up queries in very large 
+ databases. If you want partitioning in your database, you can install 
+ this package.

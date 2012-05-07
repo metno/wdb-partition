@@ -5,28 +5,33 @@ PREFIX = $(DESTDIR)/usr
 SQLDIR = $(PREFIX)/share/$(PACKAGE_NAME)
 BINDIR = $(PREFIX)/bin
 
-BIN_SOURCES = create_partition.sh
+BIN_SOURCES = wdb-create-partition.sh wdb-setup-partition.sh
 SQL_SOURCES = setup_partitioning.sql partition_wdb.sql
 ALL_DIST_FILES = $(BIN_SOURCES) $(SQL_SOURCES) Makefile
 
+BUILT_FILES = $(BIN_SOURCES:.sh=)
 
-create_partition:	create_partition.sh
+all:	$(BUILT_FILES)
+
+
+wdb-create-partition:	wdb-create-partition.sh
+	sed s_SHAREDIR\=\._SHAREDIR=$(SQLDIR)_g $< > $@
+	
+wdb-setup-partition: wdb-setup-partition.sh
 	sed s_SHAREDIR\=\._SHAREDIR=$(SQLDIR)_g $< > $@
 
-all:	create_partition
-
 clean:
-	rm -f create_partition
+	rm -f $(BUILT_FILES)
 
 
 install:	all
 	mkdir -p $(SQLDIR)
 	install -m444 -t $(SQLDIR) $(SQL_SOURCES)
 	mkdir -p $(BINDIR)
-	install -t $(BINDIR) $(BIN_SOURCES:.sh=)
+	install -t $(BINDIR) $(BUILT_FILES)
 
 uninstall:
-	cd $(BINDIR) && rm -f $(BIN_SOURCES:.sh=)
+	cd $(BINDIR) && rm -f $(BUILT_FILES)
 	cd $(SQLDIR) && rm -f $(SQL_SOURCES)
 
 dist:	
