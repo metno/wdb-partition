@@ -1,0 +1,6 @@
+You can use this to modify a wdb database's floatvalue table to be
+partitioned.
+
+Partitioning is useful for speeding up queries in very large
+databases. If you want partitioning in your database, you can install
+this package.
