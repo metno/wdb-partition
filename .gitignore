@@ -3,3 +3,5 @@ debian/files
 debian/wdb-partition.debhelper.log
 debian/wdb-partition.substvars
 
+wdb-create-partition
+wdb-setup-partition
