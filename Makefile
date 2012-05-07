@@ -35,6 +35,7 @@ uninstall:
 	cd $(SQLDIR) && rm -f $(SQL_SOURCES)
 
 DISTFILE = wdb-partition-$(VERSION).tar.gz
+ARCHITECTURE = `dpkg-architecture -qDEB_BUILD_ARCH`
 
 dist:	
 	mkdir -p wdb-partition-$(VERSION)
@@ -44,7 +45,8 @@ dist:
 
 debian: dist
 	mv $(DISTFILE) ..
-	dpkg-buildpackage
-	rm debian/wdb-partition
+	dpkg-buildpackage -us -uc
+	rm -r debian/wdb-partition
+	lintian ../wdb-partition_$(VERSION).dsc ../wdb-partition_$(VERSION)_$(ARCHITECTURE).deb
 
 .PHONY: all clean install uninstall dist debian

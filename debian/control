@@ -1,10 +1,9 @@
 Source: wdb-partition
-Section: unknown
+Section: devel
 Priority: extra
 Maintainer: Vegard Bones <vegard.bones@met.no>
 Build-Depends: debhelper (>= 7)
-Standards-Version: 3.8.3
-Homepage: <insert the upstream URL, if relevant>
+Standards-Version: 3.9.1
 
 Package: wdb-partition
 Architecture: any
