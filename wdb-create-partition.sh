@@ -57,7 +57,7 @@ wdb_arguments()
 {
 	[ -z $DATABASE ] || echo -n "-d$DATABASE "
 	[ -z $HOSTNAME ] || echo -n "-h$HOSTNAME "
-	[ -z $USERNAME ] || echo -n "-u$USERNAME "
+	[ -z $USERNAME ] || echo -n "-U$USERNAME "
 	[ -z $PORT ] || echo -n "-p$PORT "
 }
 
