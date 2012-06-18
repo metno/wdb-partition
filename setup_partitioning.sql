@@ -10,14 +10,14 @@ GRANT ALL ON SCHEMA wdb_partition TO wdb_clean;
 
 
 -- This table lists all partitions, with their time ranges
-CREATE TABLE wdb_partition.floatvalue_partitions (
+CREATE TABLE wdb_partition.floatvalueitem_partitions (
        partition_name text NOT NULL PRIMARY KEY,
        fromtime timestamp with time zone NOT NULL,
        totime timestamp with time zone NOT NULL
 );
 
 -- The distribution function
-CREATE OR REPLACE FUNCTION wdb_partition.floatvalue_allocate()
+CREATE OR REPLACE FUNCTION wdb_partition.floatvalueitem_allocate()
 RETURNS trigger AS
 $BODY$
 DECLARE
@@ -27,7 +27,7 @@ BEGIN
 	SELECT 
 	      partition_name INTO partition 
 	FROM 
-	      wdb_partition.floatvalue_partitions
+	      wdb_partition.floatvalueitem_partitions
 	WHERE 
 	      fromtime <= NEW.referencetime AND
 	      totime > NEW.referencetime;
@@ -39,20 +39,8 @@ BEGIN
 	-- Feil her
 	--INSERT INTO partition_name VALUES (NEW.*);
 	insert_statement := 'INSERT INTO '|| partition ||' VALUES ('|| 
-			 NEW.valueid || ', ' ||
-			 NEW.valuetype || ', ' ||
-			 NEW.dataproviderid || ', ' ||
-			 NEW.placeid || ', ' ||
+			 NEW.valuegroupid || ', ' ||
 			 quote_literal(NEW.referencetime) || ', ' ||
-			 quote_literal(NEW.validtimefrom) || ', ' ||
-			 quote_literal(NEW.validtimeto) || ', ' ||
-			 NEW.validtimeindeterminatecode || ', ' ||
-			 NEW.valueparameterid || ', ' ||
-			 NEW.levelparameterid || ', ' ||
-			 NEW.levelfrom || ', ' ||
-			 NEW.levelto || ', ' ||
-			 NEW.levelindeterminatecode || ', ' || 
-			 NEW.dataversion || ', ' ||
 			 NEW.maxdataversion || ', ' ||
 			 NEW.confidencecode || ', ' ||
 			 NEW.value || ', ' ||
@@ -65,9 +53,9 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
-CREATE TRIGGER floatvalue_partition_allocate_trigger
-BEFORE INSERT ON wdb_int.floatvalue
-FOR EACH ROW EXECUTE PROCEDURE wdb_partition.floatvalue_allocate();
+CREATE TRIGGER floatvalueitem_partition_allocate_trigger
+BEFORE INSERT ON wdb_int.floatvalueitem
+FOR EACH ROW EXECUTE PROCEDURE wdb_partition.floatvalueitem_allocate();
 
 
 
