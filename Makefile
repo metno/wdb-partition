@@ -1,5 +1,5 @@
 PACKAGE_NAME = wdb-partition
-VERSION = 0.1.0
+VERSION = 0.2.0
 
 PREFIX = $(DESTDIR)/usr
 SQLDIR = $(PREFIX)/share/$(PACKAGE_NAME)
@@ -52,9 +52,12 @@ dist:
 	rm -r wdb-partition-$(VERSION)
 
 debian: dist
-	mv $(DISTFILE) ..
-	dpkg-buildpackage -us -uc
-	rm -r debian/wdb-partition
+	tar xzf $(DISTFILE)
+	cp -r debian wdb-partition-$(VERSION)
+	cd wdb-partition-$(VERSION); \
+	dpkg-buildpackage -us -uc; \
+	rm -r debian/wdb-partition; \
 	lintian ../wdb-partition_$(VERSION).dsc ../wdb-partition_$(VERSION)_$(ARCHITECTURE).deb
+	rm -rf wdb-partition-$(VERSION)
 
 .PHONY: all clean install uninstall dist debian

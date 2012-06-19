@@ -1,3 +1,9 @@
+wdb-partition (0.2.0) lucid; urgency=low
+
+  * new version
+
+ -- Vegard Bones <vegard.bones@met.no>  Tue, 19 Jun 2012 14:08:31 +0200
+
 wdb-partition (0.1.0) unstable; urgency=low
 
   * Initial Release.

@@ -8,3 +8,10 @@ wdb-setup-partition
 debian/wdb-partition/
 wdb-create-partition.1
 wdb-setup-partition.1
+
+wdb-partition-*.tar.gz
+wdb-partition_*.dsc
+wdb-partition_*.tar.gz
+wdb-partition_*_*.changes
+wdb-partition_*_*.deb
+
