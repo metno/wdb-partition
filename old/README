@@ -1,0 +1,4 @@
+These are files that should work on wdb versions before 1.5
+
+Since we only have use for partitioning on wdb versions above 1.5,
+these are not installed or used automatically in any way.
