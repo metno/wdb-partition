@@ -1,3 +1,9 @@
+wdb-partition (0.2.2) precise; urgency=low
+
+  * dependency correction
+
+ -- Vegard Bones <vegard.bones@met.no>  Tue, 19 Nov 2013 12:37:08 +0100
+
 wdb-partition (0.2.0) lucid; urgency=low
 
   * new version

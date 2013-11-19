@@ -3,11 +3,11 @@ Section: devel
 Priority: extra
 Maintainer: Vegard Bones <vegard.bones@met.no>
 Build-Depends: debhelper (>= 7)
-Standards-Version: 3.9.1
+Standards-Version: 3.9.3
 
 Package: wdb-partition
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, wdb (>= 1.5.0)
+Depends: ${shlibs:Depends}, ${misc:Depends}, wdb-1.5
 Description: Modify a wdb database's floatvalue table to be partitioned
  Partitioning is useful for speeding up queries in very large 
  databases. If you want partitioning in your database, you can install 

@@ -1,5 +1,5 @@
 PACKAGE_NAME = wdb-partition
-VERSION = 0.2.0
+VERSION = 0.2.2
 
 PREFIX = $(DESTDIR)/usr
 SQLDIR = $(PREFIX)/share/$(PACKAGE_NAME)
