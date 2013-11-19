@@ -41,10 +41,10 @@ Options:
 
   --table-extension            Override generated table name extension
 
-  --next-period                 This is an alternative to the above
+  --next-period                This is an alternative to the above
                                options. Create a new partition, valid
-                               for one month, starting at the first
-                               day of the upcoming month
+                            for three months, starting at the first
+                        day of the first month with month_number % 3 = 2
 
   -d [ --database ] arg (=wdb) Database name (ex. wdb)
   -h [ --host ] arg            Database host (ex. somehost.met.no)
